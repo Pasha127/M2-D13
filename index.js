@@ -17,6 +17,7 @@ const searchCatalog = () => {
     const query = searchField.value;
     console.log(query);
     modal.querySelector("div.modal-header").innerText  = catalog[0].title;
+    modal.querySelector(".modal-body img").setAttribute("src", catalog[0].img) ;
 }
 window.onload = () => {
     loadDefaultBooks();

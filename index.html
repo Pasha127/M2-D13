@@ -134,22 +134,27 @@
             Take a chance & roll for knowledge!
           </p>
           <div class="d-flex" style="height: 40px;">
-            <input id="searchField" class="form-control"  type="text" placeholder="Enter keywords here...">
-            <button id="searchButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal">
-              Search
-            </button>
+
+            <div class="input-group mb-3">
+              <input type="text" id="searchField" class="form-control" placeholder="Enter Title Keywords" aria-label="Recipient's username" aria-describedby="button-addon2" >
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="searchButton" data-toggle="modal" data-target="#modal">Search</button>
+              </div>
+            </div>
+
+
           </p>
         </div>
       </section>
 
       <div class="container d-flex justify-content-center">
-        <h2 class="jumbotron-heading ">Cart:</h2>
+        <h2 class="jumbotron-heading ">Catalog:</h2>
 
       </div>
 
       <div class="album py-5 bg-light">
         <div class="container">
-          <div class="row">
+          <div class="row d-flex justify-content-center">
             <!-- <div class="col-md-4">
               <div class="card mb-4 shadow-sm">
                 <svg

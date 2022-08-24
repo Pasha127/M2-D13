@@ -4,9 +4,12 @@ const cardZone = document.querySelector("div.album.py-5.bg-light");
 const modal = document.querySelector("#modal");
 const modalBody = document.querySelector("#modal div.modal-body .row");
 const cardContainerRow = cardZone.querySelector("div.row");
+const viewCartButton = document.querySelector("#viewCartButton");
+let query = searchField.value;
 let searchResultArr = []; 
-
+let cartArr = [];
 let catalog = {};
+
 const  loadDefaultBooks = async () => {
     try{
         const response = await fetch("https://striveschool-api.herokuapp.com/books");
@@ -19,7 +22,6 @@ const  loadDefaultBooks = async () => {
 };
 const searchCatalog = () => {
     searchResultArr = [];
-    const query = searchField.value;
     console.log(query);
     modal.querySelector("div.modal-header").innerText  = `Search: "${query}"`;
     //modal.querySelector(".modal-body img").setAttribute("src", catalog[0].img) ;
@@ -31,13 +33,55 @@ const searchCatalog = () => {
         }
     }
     console.log(searchResultArr);
-    makeCards(modalBody, searchResultArr);
+    makeCards(modalBody, searchResultArr);    
+    
+}
 
+const showCart = () => {
+    
+    modal.querySelector("div.modal-header").innerText  = `Your Cart has ${cartArr.length} items`;
+    for(card of modalBody.querySelectorAll("*")){
+        card.remove();
+    }
+    makeCards(modalBody, cartArr);    
+}
 
+const changeDisplayed = () => {
+    searchResultArr = [];
+    query = searchField.value;
+    if(query.length >=3){
+        for(card of document.querySelectorAll(".col-md-4")){
+            card.remove();
+        };
+        
+        for(let i=0; i<catalog.length; i++){
+            //console.log(catalog[i].title.toLowerCase().includes(query.toLowerCase()));
+            if(catalog[i].title.toLowerCase().includes(query.toLowerCase())){
+                searchResultArr.push(catalog[i]);
+                
+            }
+        }
+        console.log(searchResultArr);
+        makeCards(cardContainerRow, searchResultArr);
+    }
+}
+const resetBoard = () => {
+    searchField.value = "";
+    for(card of document.querySelectorAll(".col-md-4")){
+        card.remove();
+    };
+    makeCards(cardContainerRow, catalog);
+}
+
+const addToCart = (e) => {    
+    const addedBook = catalog.filter(element => element.title === e.target.closest(".card").querySelector(".card-text").innerText);
+    cartArr.push(addedBook[0]);
+    
 }
 
 const makeCards = (where, array1) => {
     array1.forEach(element => {
+        console.log(element);
         const newCard = document.createElement("div");
         newCard.innerHTML = `<div class="col-md-4">
         <div class="card mb-4 shadow-sm" style="width: 220px;">
@@ -53,29 +97,33 @@ const makeCards = (where, array1) => {
         <div class="btn-group">
         <button
         type="button"
-        class="btn btn-sm btn-outline-secondary"
+        class="btn btn-sm btn-outline-secondary skipBtn"
         >
-        View
+        Skip
         </button>
         <button
         type="button"
-        class="btn btn-sm btn-outline-secondary"
+        class="btn btn-sm btn-outline-secondary addCart"
         >
         Add to Cart
         </button>
         </div>
-        <small class="text-muted">9 mins</small>
+       
         </div>
         </div>
         </div>
         </div>`
         where.append(newCard);
     });
+    const cartBtns = document.querySelectorAll(".addCart");
+    cartBtns.forEach(btn => btn.addEventListener("click", addToCart));
 }
 
 window.onload = () => {
     loadDefaultBooks();    
-    //searchField.addEventListener("click", searchCatalog)
-    searchButton.addEventListener("click", searchCatalog);
-
-  };
+    searchField.addEventListener("keydown", changeDisplayed)
+    searchButton.addEventListener("click", resetBoard);
+    viewCartButton.addEventListener("click", showCart);
+    
+    
+};

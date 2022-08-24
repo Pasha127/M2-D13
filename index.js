@@ -5,6 +5,7 @@ const modal = document.querySelector("#modal");
 const modalBody = document.querySelector("#modal div.modal-body .row");
 const cardContainerRow = cardZone.querySelector("div.row");
 const viewCartButton = document.querySelector("#viewCartButton");
+const clearCartButton = document.querySelector("#clearCartButton");
 let query = searchField.value;
 let searchResultArr = []; 
 let cartArr = [];
@@ -37,14 +38,6 @@ const searchCatalog = () => {
     
 }
 
-const showCart = () => {
-    
-    modal.querySelector("div.modal-header").innerText  = `Your Cart has ${cartArr.length} items`;
-    for(card of modalBody.querySelectorAll("*")){
-        card.remove();
-    }
-    makeCards(modalBody, cartArr);    
-}
 
 const changeDisplayed = () => {
     searchResultArr = [];
@@ -72,16 +65,48 @@ const resetBoard = () => {
     };
     makeCards(cardContainerRow, catalog);
 }
+const showCart = () => {
+    if(cartArr.length === 1){
+        modal.querySelector("div.modal-header").innerText  = `Your Cart has 1 item.`;
+    }else{    
+        modal.querySelector("div.modal-header").innerText  = `Your Cart has ${cartArr.length} items.`;
+    }   
+
+    
+    for(card of modalBody.querySelectorAll("*")){
+        card.remove();
+    }
+    cartArr.forEach(element => {
+        const newP = document.createElement('p') 
+        newP.innerText = element;
+        modalBody.append(newP);
+    })   
+}
 
 const addToCart = (e) => {    
     const addedBook = catalog.filter(element => element.title === e.target.closest(".card").querySelector(".card-text").innerText);
-    cartArr.push(addedBook[0]);
+    cartArr.push(addedBook[0].title);
+    e.target.closest(".card").classList.add("selcted4Cart");
+
     
+}
+const clearCart = () =>{
+    resetBoard();
+    cartArr=[];
+   
+    modal.querySelector("div.modal-header").innerText  = `Your Cart has ${cartArr.length} items.`;
+
+    for(card of modalBody.querySelectorAll("*")){
+        card.remove();
+    }
+}
+const skip = (e) => {
+    e.target.closest("div.col-md-4").remove();
 }
 
 const makeCards = (where, array1) => {
     array1.forEach(element => {
-        console.log(element);
+        
         const newCard = document.createElement("div");
         newCard.innerHTML = `<div class="col-md-4">
         <div class="card mb-4 shadow-sm" style="width: 220px;">
@@ -116,7 +141,9 @@ const makeCards = (where, array1) => {
         where.append(newCard);
     });
     const cartBtns = document.querySelectorAll(".addCart");
+    const skipBtns = document.querySelectorAll(".skipBtn");
     cartBtns.forEach(btn => btn.addEventListener("click", addToCart));
+    skipBtns.forEach(btn => btn.addEventListener("click", skip));
 }
 
 window.onload = () => {
@@ -124,6 +151,7 @@ window.onload = () => {
     searchField.addEventListener("keydown", changeDisplayed)
     searchButton.addEventListener("click", resetBoard);
     viewCartButton.addEventListener("click", showCart);
+    clearCartButton.addEventListener("click", clearCart);
     
     
 };

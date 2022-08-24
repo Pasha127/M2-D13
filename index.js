@@ -1,3 +1,8 @@
+const searchField = document.querySelector("#searchField");
+const searchButton = document.querySelector("#searchButton");
+const modal = document.querySelector("#modal");
+
+
 let catalog = {};
 const  loadDefaultBooks = async () => {
     try{
@@ -8,4 +13,14 @@ const  loadDefaultBooks = async () => {
     catch(err){console.log(err)};
     console.log(catalog);
 };
-loadDefaultBooks();
+const searchCatalog = () => {
+    const query = searchField.value;
+    console.log(query);
+    modal.querySelector("div.modal-header").innerText  = catalog[0].title;
+}
+window.onload = () => {
+    loadDefaultBooks();
+    //searchField.addEventListener("click", searchCatalog)
+    searchButton.addEventListener("click", searchCatalog);
+
+  };
